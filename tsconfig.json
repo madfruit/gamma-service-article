@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "sourceMap": true,
+    "module": "CommonJS",
+    "strict": true,
+    "skipLibCheck": true,
+    "lib": [
+      "ES2015",
+      "dom"
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "compileOnSave": true,
+  "watch": true
+}
+
