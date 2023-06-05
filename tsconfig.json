@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "target": "ES2015",
     "baseUrl": ".",
     "outDir": "dist",
     "sourceMap": true,
     "module": "CommonJS",
     "strict": true,
+    "strictNullChecks": false,
     "skipLibCheck": true,
     "lib": [
       "ES2015",

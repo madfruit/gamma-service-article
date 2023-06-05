@@ -1,7 +1,8 @@
 import { Action, Payload } from 'package-app';
-import {ArticleActionName, GetArticlePayload, RequestAddArticlePayload, Role} from "package-types";
+import {ArticleActionName, GetArticlePayload, GetArticleResult, RequestAddArticlePayload, Role} from "package-types";
 import {ArticleService} from "../services/article";
 import {CurrentUserSchema} from "package-types/dist/validationSchemas/currentUser";
+import addUsers from "../helpers/addUsers";
 
 export default new class GetObjectById implements Action{
     getName(): string{
@@ -15,12 +16,15 @@ export default new class GetObjectById implements Action{
         };
     }
 
-    async execute(payload: Payload<GetArticlePayload>): Promise<any> {
+    async execute(payload: Payload<GetArticlePayload>): Promise<GetArticleResult> {
         const { id, currentUser } = payload.params;
         if(currentUser && currentUser.role === Role.AUTHOR) {
-            return ArticleService.getArticle(id);
+            const article = await ArticleService.getArticle(id);
+            return { article };
         }
-        return ArticleService.getPostedArticle(id);
+        const article = await ArticleService.getPostedArticle(id);
+        const [articleWithUsers] = await addUsers([article]);
+        return { article: articleWithUsers }
     }
 }
 

@@ -1,54 +1,50 @@
-import {Model, DataTypes, InferAttributes, InferCreationAttributes, CreationOptional} from 'sequelize';
 import {App} from "package-app";
+import {Column, PrimaryKey, Table, Model, DataType, Default, AllowNull, Index} from "sequelize-typescript";
 
 const sequelize = App.getInstance().getDBConnection();
 
-class Article extends Model<InferAttributes<Article>, InferCreationAttributes<Article>> {
-    declare id: string;
-    declare title: string;
-    declare text: string;
-    declare author: string;
-    declare authorName: string;
-    declare posted: boolean;
-    declare reviewerName: CreationOptional<string>;
-    declare reviewer: CreationOptional<string>;
-    declare firstPublishedAt: CreationOptional<Date>;
+@Table({tableName: 'articles'})
+class Article extends Model<Article> {
+    @PrimaryKey
+    @Column({
+        type: DataType.UUIDV4,
+        defaultValue: DataType.UUIDV4
+    })
+    id: string;
+
+    @Index('article_search_index')
+    @Column(DataType.CHAR(200))
+    title: string;
+
+    @Index('article_search_index')
+    @Column(DataType.TEXT)
+    text: string;
+
+    @Column(DataType.UUIDV4)
+    authorId: string;
+
+    @Default(false)
+    @Column(DataType.BOOLEAN)
+    posted: boolean;
+
+    @AllowNull
+    @Column(DataType.UUIDV4)
+    reviewerId?: string;
+
+    @AllowNull
+    @Column(DataType.DATE)
+    firstPublishedAt?: Date;
+
+    @Column(DataType.CHAR(400))
+    image: string;
+
+    @Column(DataType.DATE)
+    createdAt: Date;
+
+    @AllowNull
+    @Column(DataType.DATE)
+    updatedAt?: Date;
 }
 
-    Article.init({
-    id: {
-        type: DataTypes.UUIDV4,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
-    },
-    title: {
-        type: DataTypes.CHAR(200)
-    },
-    text: {
-        type: DataTypes.TEXT
-    },
-    author: {
-        type: DataTypes.UUIDV4
-    },
-    authorName: {
-        type: DataTypes.CHAR(150)
-    },
-    posted: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
-    },
-    reviewerName: {
-        type: DataTypes.CHAR(150),
-        allowNull: true
-    },
-    reviewer: {
-        type: DataTypes.UUIDV4,
-        allowNull: true
-    },
-    firstPublishedAt: {
-        type: DataTypes.DATE,
-        allowNull: true
-    }
-}, { sequelize, modelName: 'article' });
+export default Article
 
-export default Article;

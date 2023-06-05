@@ -22,8 +22,7 @@ export default new class RejectArticle implements Action{
         try {
             await ArticleService.editArticle(articleId, {
                 posted: false,
-                reviewer: currentUser.id,
-                reviewerName: currentUser.name,
+                reviewerId: currentUser.id
             });
             await RemarkService.createRemarks(articleId, remarks);
             return { success: true };

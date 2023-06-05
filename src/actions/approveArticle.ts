@@ -21,8 +21,7 @@ export default new class ApproveArticle implements Action {
         try {
             await ArticleService.editArticle(articleId, {
                 posted: true,
-                reviewer: currentUser.id,
-                reviewerName: currentUser.name,
+                reviewerId: currentUser.id,
                 firstPublishedAt: date
             });
             return {success: true};

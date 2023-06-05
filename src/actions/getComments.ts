@@ -1,5 +1,5 @@
 import {App, Action, Payload} from 'package-app';
-import {AddCommentPayload, AddCommentResult, ArticleActionName} from "package-types";
+import {AddCommentPayload, AddCommentResult, ApproveArticlePayload, ArticleActionName} from "package-types";
 import {CurrentUserSchema} from "package-types/dist/validationSchemas/currentUser";
 import {CommentService} from "../services/comment";
 

@@ -1,28 +1,51 @@
-import { Article as ArticleType } from '../interfaces/article'
 import Article from "../models/article";
-import { uuid } from 'uuidv4'
-import { Table, Column, Model, HasMany } from 'sequelize-typescript';
+import {Op} from "sequelize";
 
 export class ArticleService {
     public static async getArticle(id: string): Promise<Article | null> {
-        const article = await Article.findByPk(id, { raw: true });
-        return article;
+        return Article.findByPk(id, {raw: true});
     }
 
     public static async getPostedArticle(id: string): Promise<Article | null> {
-        const article = await Article.findOne({where: {id, posted: true}, raw: true});
-        return article;
+        return Article.findOne({where: {id, posted: true}, raw: true});
     }
 
-    public static async createArticle(title: string, text: string, author: string, authorName: string):Promise<Article> {
-        return Article.create({id: uuid(), title, text, author, authorName, posted: false});
+    public static async getArticles(text: string): Promise<Article[]> {
+        const articlesByTitle = await Article.findAll({
+            where: {
+                title: {
+                    [Op.like]: `%${text}%`
+                },
+                posted: true
+            }, order: [['createdAt', 'DESC']], raw: true
+        });
+        const articlesByText = await Article.findAll({
+            where: {
+                text: {
+                    [Op.like]: `%${text}%`
+                },
+                posted: true
+            }, order: [['createdAt', 'DESC']], raw: true
+        });
+        const result: Article[] = [];
+        [...articlesByTitle, ...articlesByText].map((article) => {
+            if(!result.find(a => a.id === article.id)) {
+                result.push(article);
+            }
+        });
+
+        return result;
     }
 
-    public static async editArticle(articleId: string, article: Partial<ArticleType>) {
-        return Article.update({...article}, { where: { id: articleId } });
+    public static async createArticle(title: string, text: string, authorId: string, image: string): Promise<Article> {
+        return Article.create({title, text, authorId, image, posted: false, createdAt: new Date()});
     }
 
-    public static async deleteArticle(articleId: string) {
-        return Article.destroy({where: { id: articleId }});
+    public static async editArticle(articleId: string, article: Partial<Article>): Promise<void> {
+        await Article.update({...article}, {where: {id: articleId}});
+    }
+
+    public static async deleteArticle(articleId: string): Promise<void> {
+        await Article.destroy({where: {id: articleId}});
     }
 }
