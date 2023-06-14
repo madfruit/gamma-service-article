@@ -1,4 +1,4 @@
-import Article from "./article";
+import Comment from "./comment";
 import {
     Column,
     PrimaryKey,
@@ -7,12 +7,11 @@ import {
     Table,
     ForeignKey,
     AllowNull,
-    BelongsTo, HasMany
+    BelongsTo
 } from "sequelize-typescript";
-import Report from "./report";
 
-@Table({tableName: 'comments'})
-class Comment extends Model<Partial<Comment>> {
+@Table({tableName: 'reports'})
+class Report extends Model<Partial<Report>> {
     @PrimaryKey
     @Column({
         type: DataType.UUIDV4,
@@ -21,17 +20,14 @@ class Comment extends Model<Partial<Comment>> {
     id: string;
 
     @Column(DataType.UUIDV4)
-    @ForeignKey(() => Article)
-    articleId: string;
+    @ForeignKey(() => Comment)
+    commentId: string;
 
-    @BelongsTo(() => Article)
-    article: Article;
+    @BelongsTo(() => Comment)
+    comment: Comment
 
     @Column(DataType.UUIDV4)
-    authorId: string;
-
-    @Column(DataType.CHAR(1000))
-    text: string;
+    userId: string;
 
     @Column(DataType.DATE)
     createdAt: Date;
@@ -39,9 +35,6 @@ class Comment extends Model<Partial<Comment>> {
     @AllowNull
     @Column(DataType.DATE)
     updatedAt?: Date;
-
-    @HasMany(() => Report)
-    reports: Report[];
 }
 
-export default Comment;
+export default Report;

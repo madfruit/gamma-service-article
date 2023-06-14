@@ -133,9 +133,9 @@
   integrity sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==
 
 "@types/node@*":
-  version "20.2.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.2.5.tgz#26d295f3570323b2837d322180dfbf1ba156fefb"
-  integrity sha512-JJulVEQXmiY9Px5axXHeYGLSjhkZEnD+MDPDGbCbIAbMslkKwmygtZFy1X6s/075Yo94sf8GuSlFfPzysQrWZQ==
+  version "20.3.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.3.1.tgz#e8a83f1aa8b649377bb1fb5d7bac5cb90e784dfe"
+  integrity sha512-EhcH/wvidPy1WeML3TtYFGR83UzjxeWRen9V402T8aUGYsCHOmfoisV3ZSg03gAFIbLq8TnWOJ0f4cALtnSEUg==
 
 "@types/node@^18.11.18":
   version "18.16.16"
@@ -960,7 +960,7 @@ p-timeout@^4.1.0:
 
 "package-types@git+ssh://git@gitlab.com:fedchenkov-graduate-work/package-types.git":
   version "1.0.0"
-  resolved "git+ssh://git@gitlab.com:fedchenkov-graduate-work/package-types.git#5ea5f1f60554189d960ccbb040bbea16d0a1147b"
+  resolved "git+ssh://git@gitlab.com:fedchenkov-graduate-work/package-types.git#a358c0fa73b4aa883f9c146e64090382e3dde9e9"
   dependencies:
     "@types/express-fileupload" "^1.4.1"
     express-fileupload "^1.4.0"
@@ -1093,6 +1093,11 @@ postgres-bytea@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/postgres-bytea/-/postgres-bytea-1.0.0.tgz#027b533c0aa890e26d172d47cf9ccecc521acd35"
   integrity sha512-xy3pmLuQqRBZBXDULy7KbaitYqLcmxigw14Q5sj8QBVLqEwXfeybIKVWiqAXTlcvdvb0+xkOtDbfQMOf4lST1w==
+
+postgres-date@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/postgres-date/-/postgres-date-2.1.0.tgz#b85d3c1fb6fb3c6c8db1e9942a13a3bf625189d0"
+  integrity sha512-K7Juri8gtgXVcDfZttFKVmhglp7epKb1K4pgrkLxehjqkrgPhfG6OO8LHLkfaqkbpjNRnra018XwAr1yQFWGcA==
 
 postgres-date@~1.0.4:
   version "1.0.7"

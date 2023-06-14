@@ -1,5 +1,5 @@
 import {App, Action, Payload} from 'package-app';
-import {AddCommentPayload, AddCommentResult, ArticleActionName} from "package-types";
+import {AddCommentPayload, AddCommentResult, ArticleActionName, CommentWithUser} from "package-types";
 import {CurrentUserSchema} from "package-types/dist/validationSchemas/currentUser";
 import {CommentService} from "../services/comment";
 
@@ -19,11 +19,13 @@ export default new class AddComment implements Action{
     async execute(payload: Payload<AddCommentPayload>): Promise<AddCommentResult> {
         const { articleId, text, currentUser } = payload.params;
         try {
-            await CommentService.createComment(articleId, text, currentUser.id);
-            return { success: true };
+            const comment = await CommentService.createComment(articleId, text, currentUser.id);
+            const commentWithUser = <CommentWithUser>comment;
+            commentWithUser.author = currentUser;
+            return { comment: commentWithUser };
         } catch (err) {
             App.logError(err);
-            return { success: false };
+            return {  };
         }
     }
 }

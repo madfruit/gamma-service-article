@@ -1,5 +1,5 @@
 import { App, Action, Payload} from 'package-app';
-import {ApproveArticlePayload, ArticleActionName} from "package-types";
+import {ApproveArticlePayload, ApproveArticleResult, ArticleActionName} from "package-types";
 import {ArticleService} from "../services/article";
 import {CurrentUserSchema} from "package-types/dist/validationSchemas/currentUser";
 
@@ -15,10 +15,14 @@ export default new class ApproveArticle implements Action {
         }
     }
 
-    async execute(payload: Payload<ApproveArticlePayload>): Promise<any> {
+    async execute(payload: Payload<ApproveArticlePayload>): Promise<ApproveArticleResult> {
         const {articleId, currentUser} = payload.params;
-        const date = new Date();
         try {
+            const article = await ArticleService.getArticle(articleId);
+            if (article.reviewerId !== currentUser.id) {
+                return { success: false }
+            }
+            const date = new Date();
             await ArticleService.editArticle(articleId, {
                 posted: true,
                 reviewerId: currentUser.id,

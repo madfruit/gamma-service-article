@@ -1,30 +1,27 @@
 import {App, Action, Payload} from 'package-app';
 import {
-    ArticleActionName,
-    GetCommentsPayload, GetCommentsResult
+    ArticleActionName, GetCommentsByAuthorPayload, GetCommentsByAuthorResult,
 } from "package-types";
 import {CurrentUserSchema} from "package-types/dist/validationSchemas/currentUser";
 import {CommentService} from "../services/comment";
-import {addUsersComments} from "../helpers/addUsers";
 
 export default new class GetComments implements Action{
     getName(): string{
-        return ArticleActionName.GetComments;
+        return ArticleActionName.GetCommentsByAuthor;
     }
 
     getValidationSchema(): any {
         return {
-            articleId: { type: 'string' },
+            authorId: { type: 'string' },
             currentUser: { type: 'object', props: CurrentUserSchema, optional: true, nullable: true }
         }
     }
 
-    async execute(payload: Payload<GetCommentsPayload>): Promise<GetCommentsResult> {
-        const { articleId } = payload.params;
+    async execute(payload: Payload<GetCommentsByAuthorPayload>): Promise<GetCommentsByAuthorResult> {
+        const { authorId } = payload.params;
         try {
-            const comments = await CommentService.getArticleComments(articleId);
-            const commentsWithUsers = await addUsersComments(comments);
-            return { comments: commentsWithUsers };
+            const comments = await CommentService.getCommentsByAuthor(authorId);
+            return { comments };
         } catch (err) {
             App.logError(err);
             return { comments: []};

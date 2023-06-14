@@ -1,4 +1,4 @@
-import {Action, App, Payload} from 'package-app';
+import {Action, Payload} from 'package-app';
 import {ArticleService} from "../services/article";
 import {
     ArticleActionName,
@@ -7,9 +7,9 @@ import {
     CurrentUserSchema,
 } from "package-types";
 import articleTextTrimmer from "../helpers/articleTextTrimmer";
-import addUsers from "../helpers/addUsers";
+import {addUsersArticles} from "../helpers/addUsers";
 
-export default new class GetObjectById implements Action{
+export default new class SearchArticles implements Action{
     getName(): string{
         return ArticleActionName.GetArticles;
     }
@@ -25,7 +25,7 @@ export default new class GetObjectById implements Action{
         const text = payload.params.text ?? '';
         const articles = await ArticleService.getArticles(text);
         const trimmedArticles = articleTextTrimmer(articles);
-        const articlesWithUsers = await addUsers(trimmedArticles);
+        const articlesWithUsers = await addUsersArticles(trimmedArticles);
         return { articles: articlesWithUsers };
     }
 }

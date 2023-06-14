@@ -1,8 +1,5 @@
 import {Column, PrimaryKey, Table, Model, DataType, ForeignKey, BelongsTo} from "sequelize-typescript";
-import {App} from "package-app";
 import Article from "./article";
-
-const sequelize = App.getInstance().getDBConnection();
 
 @Table({ tableName: 'remarks' })
 class Remark extends Model<Remark> {
@@ -12,6 +9,9 @@ class Remark extends Model<Remark> {
         defaultValue: DataType.UUIDV4
     })
     id: string;
+
+    @Column(DataType.UUIDV4)
+    authorId: string;
 
     @Column(DataType.UUIDV4)
     @ForeignKey(() => Article)

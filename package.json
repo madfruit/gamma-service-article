@@ -20,6 +20,7 @@
     "package-types": "git+ssh://git@gitlab.com:fedchenkov-graduate-work/package-types.git",
     "pg": "^8.10.0",
     "postgres": "^3.3.4",
+    "postgres-date": "^2.1.0",
     "prisma": "^4.15.0",
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.5.0",

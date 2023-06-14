@@ -23,6 +23,13 @@ export default new class RequestAddArticle implements Action{
             text: {
                 type: 'string'
             },
+            tags: {
+                type: 'array',
+                items: {
+                    type: 'string',
+                    max: 50
+                }
+            },
             currentUser: {
                 type: 'object',
                 props: CurrentUserSchema
@@ -34,14 +41,14 @@ export default new class RequestAddArticle implements Action{
     }
 
     async execute(payload: Payload<RequestAddArticlePayload>): Promise<RequestAddArticleResult | undefined> {
-        const { title, text, currentUser, image} = payload.params;
+        const { title, text, tags, currentUser, image} = payload.params;
         try {
             const { fileKeys } = await App.call<UploadFilesPayload, UploadFilesResult>(ServiceName.Files, FilesActionName.UploadFiles, {files: {articleImage: image}});
             const {articleImage} = fileKeys;
             if(!articleImage) {
                 throw new Error(`Unable to upload file ${image}`);
             }
-            const article = await ArticleService.createArticle(title, text, currentUser.id, articleImage);
+            const article = await ArticleService.createArticle(title, text, currentUser.id, articleImage, tags);
             return { article };
         } catch (err) {
             App.logError(err);

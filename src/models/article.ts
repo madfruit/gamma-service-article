@@ -1,7 +1,6 @@
-import {App} from "package-app";
-import {Column, PrimaryKey, Table, Model, DataType, Default, AllowNull, Index} from "sequelize-typescript";
+import Comment from './comment'
+import {Column, PrimaryKey, Table, Model, DataType, Default, AllowNull, Index, HasMany} from "sequelize-typescript";
 
-const sequelize = App.getInstance().getDBConnection();
 
 @Table({tableName: 'articles'})
 class Article extends Model<Article> {
@@ -19,6 +18,9 @@ class Article extends Model<Article> {
     @Index('article_search_index')
     @Column(DataType.TEXT)
     text: string;
+
+    @Column(DataType.ARRAY(DataType.CHAR(50)))
+    tags: string[];
 
     @Column(DataType.UUIDV4)
     authorId: string;
@@ -44,6 +46,9 @@ class Article extends Model<Article> {
     @AllowNull
     @Column(DataType.DATE)
     updatedAt?: Date;
+
+    @HasMany(() => Comment)
+    comments?: Comment[];
 }
 
 export default Article
