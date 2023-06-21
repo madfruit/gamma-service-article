@@ -17,20 +17,24 @@ export default new class GetArticlesForReview implements Action{
         return {
             title: { type: 'string', nullable: true, optional: true },
             authorName: { type: 'string', nullable: true, optional: true },
+            page: [
+                {type: 'number', optional: true, nullable: true},
+                {type: 'string', optional: true, nullable: true},
+            ],
             currentUser: { type: 'object', props: CurrentUserSchema }
         };
     }
 
     async execute(payload: Payload<GetArticlesForReviewPayload>): Promise<GetArticlesForReviewResult> {
-        const { currentUser, title} = payload.params;
+        const { currentUser, page, title} = payload.params;
         if(!currentUser) {
             return { articles: [] };
         }
         let articlesWithoutUsers: Article[];
         if(currentUser.role === Role.AUTHOR) {
-            articlesWithoutUsers = await ArticleService.getArticlesForReview(title);
+            articlesWithoutUsers = await ArticleService.getArticlesForReview(page, title);
         } else {
-            articlesWithoutUsers = await ArticleService.getArticlesForReview(currentUser.id, title);
+            articlesWithoutUsers = await ArticleService.getArticlesForReview(page, currentUser.id, title);
         }
         const trimmedArticles = articleTextTrimmer(articlesWithoutUsers);
         const articles = await addUsersArticles(trimmedArticles);

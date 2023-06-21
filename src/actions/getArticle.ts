@@ -22,13 +22,16 @@ export default new class GetObjectById implements Action{
         let article: Article;
         try {
             if (!currentUser) {
-                article = await ArticleService.getPostedArticle(id);
+                article = await ArticleService.getPostedOrSelfArticle(id);
             } else {
                 if (currentUser.role === Role.AUTHOR) {
                     article = await ArticleService.getArticle(id);
                 } else {
-                    article = await ArticleService.getPostedArticle(id);
+                    article = await ArticleService.getPostedOrSelfArticle(id, currentUser.id);
                 }
+            }
+            if(!article) {
+                return;
             }
             const [articleWithUsers] = await addUsersArticles([article]);
             return {article: articleWithUsers}

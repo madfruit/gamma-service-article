@@ -8,6 +8,7 @@ import {
 } from "package-types";
 import {ArticleService} from "../services/article";
 import {CurrentUserSchema} from "package-types/dist/validationSchemas/currentUser";
+import {setImagesToArticleText} from "../helpers/setImagesToArticleText";
 
 export default new class RequestAddArticle implements Action{
     getName(): string{
@@ -43,12 +44,14 @@ export default new class RequestAddArticle implements Action{
     async execute(payload: Payload<RequestAddArticlePayload>): Promise<RequestAddArticleResult | undefined> {
         const { title, text, tags, currentUser, image} = payload.params;
         try {
+
             const { fileKeys } = await App.call<UploadFilesPayload, UploadFilesResult>(ServiceName.Files, FilesActionName.UploadFiles, {files: {articleImage: image}});
             const {articleImage} = fileKeys;
             if(!articleImage) {
                 throw new Error(`Unable to upload file ${image}`);
             }
-            const article = await ArticleService.createArticle(title, text, currentUser.id, articleImage, tags);
+            const textWithImages = await setImagesToArticleText(text);
+            const article = await ArticleService.createArticle(title, textWithImages, currentUser.id, articleImage, tags);
             return { article };
         } catch (err) {
             App.logError(err);

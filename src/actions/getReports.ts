@@ -5,9 +5,10 @@ import {
     GetReportsResult,
 } from "package-types";
 import {CurrentUserSchema} from "package-types/dist/validationSchemas/currentUser";
-import {ReportService} from "../services/reportService";
+import {ReportService} from "../services/report";
+import {addUsersReports} from "../helpers/addUsers";
 
-export default new class GetObjectById implements Action{
+export default new class GetReports implements Action{
     getName(): string{
         return ArticleActionName.GetReports;
     }
@@ -22,7 +23,8 @@ export default new class GetObjectById implements Action{
     async execute(payload: Payload<GetReportsPayload>): Promise<GetReportsResult> {
         try {
             const reports = await ReportService.getAllReports();
-            return { reports };
+            const reportsWithUsers = await addUsersReports(reports);
+            return { reports: reportsWithUsers };
         } catch (err) {
             App.logError(err);
             return { reports: [] };

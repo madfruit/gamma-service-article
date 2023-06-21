@@ -11,7 +11,7 @@ import {
 } from "sequelize-typescript";
 
 @Table({tableName: 'reports'})
-class Report extends Model<Partial<Report>> {
+class Report extends Model<Report> {
     @PrimaryKey
     @Column({
         type: DataType.UUIDV4,

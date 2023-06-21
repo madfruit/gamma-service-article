@@ -19,7 +19,7 @@ export default new class ApproveArticle implements Action {
         const {articleId, currentUser} = payload.params;
         try {
             const article = await ArticleService.getArticle(articleId);
-            if (article.reviewerId !== currentUser.id) {
+            if (article.reviewerId && article.reviewerId !== currentUser.id) {
                 return { success: false }
             }
             const date = new Date();

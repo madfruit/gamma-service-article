@@ -1,10 +1,12 @@
 import {Action, App, Payload} from 'package-app';
 import {
     ArticleActionName,
-    GetRemarksPayload, GetRemarksResult,
+    GetRemarksPayload, GetRemarksResult, Role,
 } from "package-types";
 import {CurrentUserSchema} from "package-types/dist/validationSchemas/currentUser";
 import {RemarkService} from "../services/remark";
+import {addUsersRemarks} from "../helpers/addUsers";
+import {ArticleService} from "../services/article";
 
 export default new class GetObjectById implements Action{
     getName(): string{
@@ -14,15 +16,20 @@ export default new class GetObjectById implements Action{
     getValidationSchema(): any {
         return {
             articleId: { type:'string'},
-            currentUser: { type: 'object', optional: true, nullable: true, props: CurrentUserSchema }
+            currentUser: { type: 'object', props: CurrentUserSchema }
         };
     }
 
     async execute(payload: Payload<GetRemarksPayload>): Promise<GetRemarksResult> {
-        const { articleId } = payload.params;
+        const { articleId, currentUser } = payload.params;
         try {
+            const article = await ArticleService.getArticle(articleId);
+            if(article.authorId !== currentUser.id || currentUser.role !== Role.AUTHOR) {
+                return { remarks: [] };
+            }
             const remarks = await RemarkService.getRemarks(articleId);
-            return { remarks };
+            const remarksWithUsers = await addUsersRemarks(remarks);
+            return { remarks: remarksWithUsers };
         } catch (err) {
             App.logError(err);
         }

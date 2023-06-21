@@ -19,7 +19,7 @@ class Article extends Model<Article> {
     @Column(DataType.TEXT)
     text: string;
 
-    @Column(DataType.ARRAY(DataType.CHAR(50)))
+    @Column(DataType.ARRAY(DataType.STRING(25)))
     tags: string[];
 
     @Column(DataType.UUIDV4)
@@ -39,6 +39,9 @@ class Article extends Model<Article> {
 
     @Column(DataType.CHAR(400))
     image: string;
+
+    @Column(DataType.NUMBER)
+    viewCount: number;
 
     @Column(DataType.DATE)
     createdAt: Date;

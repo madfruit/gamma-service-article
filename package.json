@@ -14,6 +14,7 @@
     "@prisma/client": "4.15.0",
     "@types/node": "^18.16.1",
     "@types/validator": "^13.7.15",
+    "create-html-element": "^4.0.1",
     "ioredis": "^5.2.5",
     "iter-ops": "^3.0.7",
     "package-app": "git+ssh://git@gitlab.com:fedchenkov-graduate-work/package-app.git",

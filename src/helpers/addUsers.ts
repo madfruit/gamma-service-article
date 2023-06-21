@@ -7,8 +7,12 @@ import {
     ServiceName,
     UsersActionName,
     ArticleWithUsers,
-    CommentWithUser
+    CommentWithUser,
+    ReportWithUser,
+    RemarkWithUser
 } from "package-types";
+import Report from "../models/report";
+import Remark from "../models/remark";
 
 export async function addUsersArticles(articles: Article[]): Promise<ArticleWithUsers[]> {
     const userIds: string[] = [];
@@ -52,5 +56,39 @@ export async function addUsersComments(comments: Comment[]): Promise<CommentWith
     return comments.map((comment: CommentWithUser) => {
         comment.author = users.find(u => u.id === comment.authorId);
         return comment;
+    });
+}
+
+export async function addUsersRemarks(remarks: Remark[]): Promise<RemarkWithUser[]> {
+    const userIds: string[] = [];
+    remarks.forEach((remark) => {
+        if(!userIds.includes(remark.authorId)) {
+            userIds.push(remark.authorId);
+        }
+    });
+
+    const { users } = await App.call<GetUsersPayload, GetUsersResult>(ServiceName.Users, UsersActionName.GetUsers, {userIds});
+    return remarks.map((remark: RemarkWithUser) => {
+        remark.author = users.find(u => u.id === remark.authorId)
+        return remark;
+    });
+}
+
+export async function addUsersReports(reports: Report[]): Promise<ReportWithUser[]> {
+    const userIds: string[] = [];
+    reports.forEach((report) => {
+        if(!userIds.includes(report.userId)) {
+            userIds.push(report.userId);
+        }
+        if(!userIds.includes(report.comment.authorId)) {
+            userIds.push(report.comment.authorId);
+        }
+    });
+
+    const { users } = await App.call<GetUsersPayload, GetUsersResult>(ServiceName.Users, UsersActionName.GetUsers, {userIds});
+    return reports.map((report: ReportWithUser) => {
+        report.user = users.find(u => u.id === report.userId)
+        report.comment.author = users.find(u => u.id === report.comment.authorId);
+        return report;
     });
 }

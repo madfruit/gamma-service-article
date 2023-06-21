@@ -14,19 +14,23 @@ export default new class GetArticlesByAuthor implements Action{
     getValidationSchema(): any {
         return {
             authorId: { type: 'string' },
+            page: [
+                {type: 'number', optional: true, nullable: true},
+                {type: 'string', optional: true, nullable: true},
+            ],
             currentUser: { type: 'object', optional: true, nullable: true, props: CurrentUserSchema }
         };
     }
 
     async execute(payload: Payload<GetArticlesByAuthorPayload>): Promise<GetArticlesByAuthorResult> {
-        const { authorId, currentUser } = payload.params;
+        const { authorId, page, currentUser } = payload.params;
         try {
             if (currentUser && authorId === currentUser.id) {
-                const articles = await ArticleService.getMyArticles(authorId);
+                const articles = await ArticleService.getMyArticles(authorId, page);
 
                 return {articles: articleTextTrimmer(articles)};
             } else {
-                const articles = await ArticleService.getArticlesByAuthor(authorId);
+                const articles = await ArticleService.getArticlesByAuthor(authorId, page);
                 return {articles:  articleTextTrimmer(articles)};
             }
         } catch (err) {

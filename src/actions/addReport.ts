@@ -5,7 +5,7 @@ import {
     ArticleActionName,
 } from "package-types";
 import {CurrentUserSchema} from "package-types/dist/validationSchemas/currentUser";
-import {ReportService} from "../services/reportService";
+import {ReportService} from "../services/report";
 
 export default new class AddReport implements Action{
     getName(): string{
@@ -22,6 +22,10 @@ export default new class AddReport implements Action{
     async execute(payload: Payload<AddReportPayload>): Promise<AddReportResult> {
         const { commentId, currentUser } = payload.params;
         try {
+            const existingReport = await ReportService.getReportByCommentAndUserId(commentId, currentUser.id);
+            if(existingReport) {
+                return { success: false };
+            }
             await ReportService.createReport(commentId, currentUser.id);
             return { success: true };
         } catch (err) {
