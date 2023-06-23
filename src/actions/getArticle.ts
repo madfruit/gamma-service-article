@@ -5,7 +5,7 @@ import {CurrentUserSchema} from "package-types/dist/validationSchemas/currentUse
 import {addUsersArticles} from "../helpers/addUsers";
 import Article from "../models/article";
 
-export default new class GetObjectById implements Action{
+export default new class GetArticle implements Action{
     getName(): string{
         return ArticleActionName.GetArticle;
     }

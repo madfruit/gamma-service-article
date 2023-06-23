@@ -8,7 +8,7 @@ import {RemarkService} from "../services/remark";
 import {addUsersRemarks} from "../helpers/addUsers";
 import {ArticleService} from "../services/article";
 
-export default new class GetObjectById implements Action{
+export default new class GetRemarks implements Action{
     getName(): string{
         return ArticleActionName.GetRemarks;
     }
@@ -24,7 +24,7 @@ export default new class GetObjectById implements Action{
         const { articleId, currentUser } = payload.params;
         try {
             const article = await ArticleService.getArticle(articleId);
-            if(article.authorId !== currentUser.id || currentUser.role !== Role.AUTHOR) {
+            if(article.authorId !== currentUser.id && currentUser.role !== Role.AUTHOR) {
                 return { remarks: [] };
             }
             const remarks = await RemarkService.getRemarks(articleId);

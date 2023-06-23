@@ -1,8 +1,6 @@
 import Article from "../models/article";
 import Comment from "../models/comment";
 import {Op} from "sequelize";
-import {Sequelize} from "sequelize-typescript";
-import {raw} from "@prisma/client/runtime";
 
 export class ArticleService {
     public static async getArticle(id: string): Promise<Article | null> {
