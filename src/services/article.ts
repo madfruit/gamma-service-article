@@ -2,6 +2,8 @@ import Article from "../models/article";
 import Comment from "../models/comment";
 import {Op} from "sequelize";
 
+const limit = 10;
+
 export class ArticleService {
     public static async getArticle(id: string): Promise<Article | null> {
         const article = await Article.findByPk(id, {include: [Comment]});
@@ -22,30 +24,14 @@ export class ArticleService {
         if(!page) {
             page = 1;
         }
-        const articlesByTitle = await Article.findAll({
+        return Article.findAll({
             where: {
                 title: {
-                    [Op.like]: `%${text}%`
+                    [Op.iLike]: `%${text}%`
                 },
                 posted: true
-            }, order: [[orderBy, order]], raw: true, offset: (page -1) * 20, limit: 20
+            }, order: [[orderBy, order]], raw: true, offset: (page -1) * limit, limit
         });
-        const articlesByText = await Article.findAll({
-            where: {
-                text: {
-                    [Op.like]: `%${text}%`
-                },
-                posted: true
-            }, order: [[orderBy, order]], raw: true
-        });
-        const result: Article[] = [];
-        [...articlesByTitle, ...articlesByText].map((article) => {
-            if(!result.find(a => a.id === article.id)) {
-                result.push(article);
-            }
-        });
-
-        return result;
     }
 
     public static getArticlesForReview(page?: number, title?: string, authorId?: string): Promise<Article[]> {
@@ -53,13 +39,13 @@ export class ArticleService {
             page = 1;
         }
         if(!title && !authorId) {
-            return Article.findAll({where: { posted: false }, order: [['updatedAt', 'DESC']], offset: (page -1) * 20, limit: 20});
+            return Article.findAll({where: { posted: false }, order: [['updatedAt', 'DESC']], offset: (page -1) * limit, limit});
         } else if(title && !authorId) {
-            return Article.findAll({where: { posted: false, title }, order: [['updatedAt', 'DESC']], offset: (page -1) * 20, limit: 20});
+            return Article.findAll({where: { posted: false, title: { [Op.iLike]: `%${title}%`} }, order: [['updatedAt', 'DESC']], offset: (page -1) * limit, limit});
         } if(!title && authorId) {
-            return Article.findAll({where: { posted: false, authorId }, order: [['updatedAt', 'DESC']], offset: (page -1) * 20, limit: 20});
+            return Article.findAll({where: { posted: false, authorId }, order: [['updatedAt', 'DESC']], offset: (page -1) * limit, limit});
         } else {
-            return Article.findAll({where: {title, authorId}, order: [['updatedAt', 'DESC']], offset: (page -1) * 20, limit: 20});
+            return Article.findAll({where: {title: { [Op.iLike]: `%${title}%`}, authorId}, order: [['updatedAt', 'DESC']], offset: (page -1) * limit, limit});
         }
     }
 
@@ -67,21 +53,21 @@ export class ArticleService {
         if(!page) {
             page = 1;
         }
-        return Article.findAll({ where: { authorId, posted: false }, offset: (page -1) * 20, limit: 20 });
+        return Article.findAll({ where: { authorId, posted: false }, offset: (page -1) * limit, limit });
     }
 
     public static getMyArticles(authorId: string, page?: number): Promise<Article[]> {
         if(!page) {
             page = 1;
         }
-        return Article.findAll({where: {authorId}, offset: (page -1) * 20, limit: 20});
+        return Article.findAll({where: {authorId}, offset: (page -1) * limit, limit});
     }
 
     public static getArticlesByTags(tags: string[], order: string, orderBy: string, page?: number): Promise<Article[]> {
         if(!page) {
             page = 1;
         }
-        return Article.findAll({where: {tags: {[Op.contains]: tags }, posted: true}, offset: (page -1) * 20, limit: 20, order: [[orderBy, order]] });
+        return Article.findAll({where: {tags: {[Op.contains]: tags }, posted: true}, offset: (page -1) * limit, limit, order: [[orderBy, order]] });
     }
 
     public static async createArticle(title: string, text: string, authorId: string, image: string, tags?: string[]): Promise<Article> {

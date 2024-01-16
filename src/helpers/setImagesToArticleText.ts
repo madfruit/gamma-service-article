@@ -29,10 +29,10 @@ export async function setImagesToArticleText(text: string): Promise<string> {
     }
 
     const {fileKeys} = await App.call<UploadBuffersPayload, UploadBuffersResult>(ServiceName.Files, FilesActionName.UploadBuffers, result);
-    let resultText = '';
+    let resultText = replacedText;
     Object.keys(fileKeys).forEach((key) => {
         const searchValue = `<${key.split('.')[0]}>`
-        resultText += replacedText.replace(`${searchValue}`, fileKeys[key]);
+        resultText = resultText.replace(`${searchValue}`, fileKeys[key]);
     });
 
     return resultText;

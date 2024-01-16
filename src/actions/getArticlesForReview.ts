@@ -34,7 +34,7 @@ export default new class GetArticlesForReview implements Action{
         if(currentUser.role === Role.AUTHOR) {
             articlesWithoutUsers = await ArticleService.getArticlesForReview(page, title);
         } else {
-            articlesWithoutUsers = await ArticleService.getArticlesForReview(page, currentUser.id, title);
+            articlesWithoutUsers = await ArticleService.getArticlesForReview(page, title, currentUser.id);
         }
         const trimmedArticles = articleTextTrimmer(articlesWithoutUsers);
         const articles = await addUsersArticles(trimmedArticles);
